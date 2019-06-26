@@ -29,14 +29,17 @@ object Level3Tests {
         val release = IO(importantResource.set("released"))
 
         Try {
-          Stream.bracket(acquire)(_ => release)
+          Stream
+            .bracket(acquire)(_ => release)
             .flatMap(_ => Stream(throw new Exception("Boom!")))
-            .compile.drain.unsafeRunSync()
+            .compile
+            .drain
+            .unsafeRunSync()
         }
 
         assertEqual(
           importantResource.get(),
-          ???
+          "released"
         )
       }
     )
