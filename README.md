@@ -1,3 +1,5 @@
+Forked from https://github.com/Zelenya/fs2-guide
+
 <img src="fs2-guide.png" width="200px" align="right">
 
 # fs2 Interactive Guide 
