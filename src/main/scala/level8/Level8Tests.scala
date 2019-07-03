@@ -9,6 +9,7 @@ import testz._
 
 object Level8Tests {
 
+  println(filter(Stream.range(0, 10))(_ % 2 == 0).toList)
   /**
     * Level 8. Pull
     *

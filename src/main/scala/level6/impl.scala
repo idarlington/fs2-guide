@@ -12,7 +12,7 @@ object impl {
       s.pull.uncons1.flatMap[F, O, Unit] {
         case Some((chunkElement, newStream)) =>
           if (p(chunkElement)) {
-            Pull.output(Chunk.singleton(chunkElement)) >> go(newStream)
+            Pull.output1(chunkElement) >> go(newStream)
           } else {
             Pull.done
           }
@@ -32,7 +32,9 @@ object impl {
       s.pull.uncons.flatMap[F, O, Unit] {
         case Some((chunk, stream)) =>
           Pull.output {
-            chunk.flatMap[O](element => Chunk.seq[O](Seq(separator, element)))
+            chunk.flatMap[O] { element =>
+              Chunk(separator, element)
+            }
           } >> go(stream)
 
         case None => Pull.done
@@ -51,9 +53,9 @@ object impl {
       stream.pull.uncons1.flatMap[F, O2, Unit] {
         case Some((element, newStream)) =>
           val result = f(acc, element)
-          Pull.output { Chunk(acc) } >> go(newStream)(result)
+          Pull.output1(acc) >> go(newStream)(result)
         case None =>
-          Pull.output { Chunk(acc) } >> Pull.done
+          Pull.output1(acc) >> Pull.done
       }
     }
 
@@ -61,7 +63,7 @@ object impl {
       stream.pull.uncons1.flatMap[F, O2, Unit] {
         case Some((element, newStream)) =>
           val result = f(acc, element)
-          Pull.output { Chunk(result) } >> otherSolution(newStream)(result)
+          Pull.output1(result) >> otherSolution(newStream)(result)
         case None =>
           Pull.done
       }
